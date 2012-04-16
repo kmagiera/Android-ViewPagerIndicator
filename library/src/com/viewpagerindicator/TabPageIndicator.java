@@ -226,6 +226,8 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
 
             TextView textView = (TextView)findViewById(android.R.id.text1);
             textView.setText(text);
+
+            refreshDrawableState();
         }
 
         @Override
@@ -237,6 +239,23 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
                 super.onMeasure(MeasureSpec.makeMeasureSpec(mParent.mMaxTabWidth, MeasureSpec.EXACTLY),
                         heightMeasureSpec);
             }
+        }
+
+        protected final static int[] FIRST_STATE_SET = {android.R.attr.state_first};
+        protected final static int[] LAST_STATE_SET = {android.R.attr.state_last};
+        protected final static int[] MIDDLE_STATE_SET = {android.R.attr.state_middle};
+
+        @Override
+        protected int[] onCreateDrawableState(int extraSpace) {
+            int drawableState[] = super.onCreateDrawableState(extraSpace + 1);
+            if (mIndex == 0) {
+                mergeDrawableStates(drawableState, FIRST_STATE_SET);
+            } else if (mParent != null && mIndex == mParent.mTabLayout.getChildCount() - 1) {
+                mergeDrawableStates(drawableState, LAST_STATE_SET);
+            } else {
+                mergeDrawableStates(drawableState, MIDDLE_STATE_SET);
+            }
+            return drawableState;
         }
 
         public int getIndex() {
